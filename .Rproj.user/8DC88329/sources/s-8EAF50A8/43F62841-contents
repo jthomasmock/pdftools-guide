@@ -17,6 +17,8 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+![](beer-kegs.jpeg)
+
 # Scraping Complex Tables from PDFs with PDF Tools
 
 The goal of this is to provide a guide to extracting irregularly formatted tables from PDFs.
