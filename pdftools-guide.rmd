@@ -93,6 +93,8 @@ We have 48 PDFs, as expected - 12 months x 4 years = 48!
 
 Now let's take a peek inside one of the PDFs.
 
+![](PDF-table.png)
+
 ### Raw PDFs
 
 When we run `pdftools::pdf_text()` we can see a decently formatted table. The main issue to consider is that there is a lot erroneous header descriptions, and there are unequal spacing between "columns" in the table. Importantly, each line of the PDF is separated by a newline `\n`. This is key to our strategy for pulling out individual lines.
