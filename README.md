@@ -4,7 +4,7 @@
 
 A vignette to using pdftools from ropensci.
 
-The [`pdftools` package]() can be installed from CRAN via `install.packages("pdftools")`.
+The [`pdftools` package](https://docs.ropensci.org/pdftools/) can be installed from CRAN via `install.packages("pdftools")`.
 
 Basic usage covered here:
 - Read in PDF text/tables
