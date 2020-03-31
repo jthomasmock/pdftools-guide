@@ -1,0 +1,4 @@
+"0","# Convert to tibble"
+"0","raw_df <- enframe(squished_table)"
+"0",""
+"0","raw_df"

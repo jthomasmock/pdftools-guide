@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1585603418210.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "2175C810",
+    "lastKnownWriteTime" : 1585573805,
+    "last_content_update" : 1585573805,
+    "path" : "~/TidyTuesday/2020/2020-03-31/download_beer.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "99,1",
+        "scrollLine" : "52"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

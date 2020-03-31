@@ -1,0 +1,7 @@
+"0","final_output <- df_2011_2014 %>%"
+"0","  # grab the data into respective columns"
+"0","  mutate(manufacture_data = map(data, 1),"
+"0","         material_data = map(data, 2)) %>% "
+"0","  select(manufacture_data, material_data)"
+"0",""
+"0","final_output"

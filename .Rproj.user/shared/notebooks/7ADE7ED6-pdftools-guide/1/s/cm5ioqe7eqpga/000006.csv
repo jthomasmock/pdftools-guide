@@ -1,0 +1,5 @@
+"0","  full_df %>% 
+    pwalk(.l = list(url_in, year_vec, month_in), .f = download_monthly_pdf)
+"
+"2","Error in is.data.frame(.l) : object 'url_in' not found
+"

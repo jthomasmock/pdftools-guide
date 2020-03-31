@@ -1,0 +1,116 @@
+get_beer_tables <- function(year, month){
+  
+raw_text <- pdftools::pdf_text("pdfs/ttb_monthly_stats_2011-01.pdf") %>% 
+  str_split("\n") %>% 
+  unlist()
+
+## Build Table
+
+# find start of table
+table_start <- stringr::str_which(raw_text, "MANUFACTURE OF BEER")
+  
+# End of table (drop all the asterisks and the other descriptors)
+table_end <- stringr::str_which(raw_text, "Total Used")
+  
+# Trim the table to the start/end and drop whitespace at each line
+table_trimmed <- raw_text[table_start:table_end] %>% 
+  str_trim()
+
+table_trimmed
+
+### Remove all the extra whitespace
+
+# Replace long spaces with a col break symbol
+squished_table <- str_replace_all(table_trimmed, "\\s{2,}", "|") %>% 
+  str_remove_all(",")
+
+### Convert to tibble
+
+# Convert to tibble
+raw_df <- enframe(squished_table)
+
+beer_df <- raw_df %>% 
+  separate(value, 
+           into = c("type", "month_current", "month_prior_year", "ytd_current", "ytd_prior_year"), 
+           sep = "\\|") %>% 
+  slice(-1) %>% 
+  mutate_at(vars(month_current:ytd_prior_year), as.double) %>% 
+  mutate(year = as.integer(year), month = as.integer(month)) %>% 
+  select(year, month, type, everything())
+
+### Proper Cleaning
+
+# ID the specific row/point to split the dataset at.
+
+slice_num <- beer_df %>% 
+  # find a string that has MATERIALS USED or IN POUNDS
+  # | means OR
+  filter(str_detect(type, "MATERIALS USED|IN POUNDS")) %>%
+  pull(name)
+
+#### Split dataframe
+
+# split data into materials vs barrels produced
+split_df <- beer_df %>% 
+  mutate(data_type = dplyr::if_else(name >= slice_num, "Pounds of Materials Used", "Barrels Produced"),
+         type = str_remove(type, ":")) %>% 
+  select(data_type, everything(), -name) %>% 
+  filter(!str_detect(type, "IN POUNDS|MATERIALS USED|MANUFACTURE OF BEER|BARRELS")) %>% 
+  group_by(data_type) %>% 
+  group_split()
+
+#### Factor cleaning and final dataframes
+
+# clean manufacture df
+manufacture_df <- split_df[[1]] %>% 
+  mutate(
+    tax_status = case_when(
+      type %in% c("In bottles and cans", "In kegs", "In barrels and kegs",
+                  "Tax Determined, Premises Use") ~ "Taxable",
+      type == "Sub Total Taxable" ~ "Sub Total Taxable",
+      type %in% c("For export", "For vessels and aircraft", 
+                  "Consumed on brewery premises") ~ "Tax Free",
+      type == "Sub Total Tax-Free" ~ "Sub Total Tax-Free",
+      type %in% c("Production", "Total Removals", 
+                  "Stocks On Hand end-of-month:") ~ "Totals"
+    ),
+    tax_rate = dplyr::if_else(year <= 2017, "$7/$18 per barrel", "$3.50/$16 per barrel")
+  ) %>% 
+  filter(!is.na(tax_status)) %>% 
+  select(data_type, tax_status, everything())
+
+# clean up the material dataset
+material_df <- split_df[[2]] %>% 
+  mutate(
+    material_type = case_when(
+      str_detect(type, "Malt|Corn|Rice|Barley|Wheat") ~ "Grain Products",
+      str_detect(type, "Sugar|Hops|Other") ~ "Non-Grain Products",
+      str_detect(type, "Total") ~ type
+    )
+  ) %>% 
+  select(data_type, material_type, everything())
+
+list(manufacture_df, material_df)
+}
+
+
+month_num <- c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12")
+
+# Use crossing to generate all combos for the data 
+# Use purrr
+final_output <- crossing(year = c(2011:2014), 
+                         month = month_num) %>% 
+  mutate(data = pmap(., get_beer_tables)) %>% 
+  mutate(manufacture_data = map(data, 1),
+         material_data = map(data, 2)) %>% 
+  select(manufacture_data, material_data)
+
+# Grab just the manufacture data
+manufacture_df <- final_output %>% 
+  select(manufacture_data) %>% 
+  unnest(manufacture_data)
+
+# Grab just the manufacture data
+material_df <- final_output %>% 
+  select(material_data) %>% 
+  unnest(material_data)
