@@ -1,5 +1,8 @@
-"0","length(all_files)
-"
+"0",""
+"0","# list all the files we have downloaded so far"
+"0","all_files <- list.files(""pdfs"")"
+"0",""
+"0","length(all_files)"
 "1","[1]"
 "1"," 48"
 "1","

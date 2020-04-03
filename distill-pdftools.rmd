@@ -1,16 +1,15 @@
 ---
 title: "Beer and pdftools - a vignette"
-author: "Thomas Mock"
-date: "3/30/2020"
+description: |
+  A guide to extracting tables from many PDFs using the pdftools package
+author:
+  - name: Thomas Mock 
+    url: https://themockup.netlify.com/
+date: "`r Sys.Date()`"
 output: 
-  html_document:
+  distill::distill_article:
     toc: true
     toc_depth: 4
-    toc_float: true
-    theme: cosmo
-    dpi: 500
-    fig_width: 10
-    fig_height: 8
 ---
 
 ```{r setup, include=FALSE}

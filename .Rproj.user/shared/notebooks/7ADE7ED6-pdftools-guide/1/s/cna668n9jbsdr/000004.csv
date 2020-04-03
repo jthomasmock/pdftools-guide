@@ -1,5 +1,8 @@
-"0","raw_text
-"
+"0","raw_text <- pdftools::pdf_text(""pdfs/ttb_monthly_stats_2011-01.pdf"") %>% "
+"0","  str_split(""\n"") %>% "
+"0","  unlist()"
+"0",""
+"0","raw_text"
 "1"," [1]"
 "1"," ""                                                                                                                  Report Date:""        "
 "1","
